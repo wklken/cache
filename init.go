@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-redis/redis/v7"
 
-	"cache/backend"
-	"cache/types"
+	"github.com/wklken/cache/backend"
+	"github.com/wklken/cache/types"
 )
 
 func NewCache(name string, disabled bool, retrieveFunc types.RetrieveFunc,

@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"cache/backend"
-	"cache/key"
+	"github.com/wklken/cache/backend"
+	"github.com/wklken/cache/key"
 )
 
 func retrieveOK(k key.Key) (interface{}, error) {

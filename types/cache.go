@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"cache/backend"
-	"cache/key"
+	"github.com/wklken/cache/backend"
+	"github.com/wklken/cache/key"
 )
 
 const EmptyCacheExpiration = 5 * time.Second
