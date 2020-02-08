@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/wklken/cache"
-	"github.com/wklken/cache/key"
 )
 
 // 1. impl the key interface, Key() string
@@ -19,7 +18,7 @@ func (k ExampleKey) Key() string {
 }
 
 // 2. impl the reterive func
-func RetrieveExample(inKey key.Key) (interface{}, error) {
+func RetrieveExample(inKey cache.Key) (interface{}, error) {
 	k := inKey.(ExampleKey)
 	fmt.Println("ExampleKey Field1 and Field2 value:", k.Field1, k.Field2)
 	// data, err := GetFromDatabase(k.Field1, k.Field2)

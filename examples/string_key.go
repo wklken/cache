@@ -5,12 +5,11 @@ import (
 	"time"
 
 	"github.com/wklken/cache"
-	"github.com/wklken/cache/key"
 )
 
 // 1. impl the reterive func
-func RetrieveOK(k key.Key) (interface{}, error) {
-	arg := k.(key.StringKey)
+func RetrieveOK(k cache.Key) (interface{}, error) {
+	arg := k.(cache.StringKey)
 	fmt.Println("arg: ", arg)
 	// you can use the arg to fetch data from database or http request
 	// username, err := GetFromDatabase(arg)
@@ -30,7 +29,7 @@ func main() {
 		6*time.Minute)
 
 	// 4. use it
-	k := key.NewStringKey("hello")
+	k := cache.NewStringKey("hello")
 
 	data, err := c.Get(k)
 	fmt.Println("err == nil: ", err == nil)

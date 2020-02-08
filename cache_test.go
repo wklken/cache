@@ -8,11 +8,10 @@ import (
 	"github.com/go-redis/redis/v7"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/wklken/cache/key"
 )
 
-func retrieveOK(k key.Key) (interface{}, error) {
-	return "", nil
+func retrieveOK(k Key) (interface{}, error) {
+	return "ok", nil
 }
 
 func TestNewCache(t *testing.T) {

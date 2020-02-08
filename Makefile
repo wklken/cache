@@ -10,4 +10,4 @@ lint:
 
 .PHONY: test
 test:
-	go test -mod=vendor -gcflags=all=-l $(shell go list ./...) -covermode=count -coverprofile .coverage.cov
+	go test -mod=vendor -gcflags=all=-l $(shell go list ./... | grep -v examples) -covermode=count -coverprofile .coverage.cov

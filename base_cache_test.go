@@ -1,4 +1,4 @@
-package types
+package cache
 
 import (
 	"errors"
@@ -8,10 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/wklken/cache/backend"
-	"github.com/wklken/cache/key"
 )
 
-func retrieveOK(k key.Key) (interface{}, error) {
+func retrieveTest(k Key) (interface{}, error) {
 	kStr := k.Key()
 	switch kStr {
 	case "a":
@@ -29,16 +28,16 @@ func retrieveOK(k key.Key) (interface{}, error) {
 	}
 }
 
-func TestNewCache(t *testing.T) {
+func TestNewBaseCache(t *testing.T) {
 	expiration := 5 * time.Minute
 	cleanupInterval := 6 * time.Minute
 
 	be := backend.NewMemoryBackend("test", expiration, cleanupInterval)
 
-	c := NewBaseCache(false, retrieveOK, be)
+	c := NewBaseCache(false, retrieveTest, be)
 
 	// get from cache
-	aKey := key.NewStringKey("a")
+	aKey := NewStringKey("a")
 	x, err := c.Get(aKey)
 	assert.NoError(t, err)
 	assert.Equal(t, "1", x.(string))
@@ -53,18 +52,18 @@ func TestNewCache(t *testing.T) {
 	assert.Equal(t, "1", x)
 
 	// get bool
-	boolKey := key.NewStringKey("bool")
+	boolKey := NewStringKey("bool")
 	x, err = c.GetBool(boolKey)
 	assert.NoError(t, err)
 	assert.Equal(t, true, x.(bool))
 	// get time
-	timeKey := key.NewStringKey("time")
+	timeKey := NewStringKey("time")
 	x, err = c.GetTime(timeKey)
 	assert.NoError(t, err)
 	assert.IsType(t, time.Time{}, x)
 
 	// get fail
-	errorKey := key.NewStringKey("error")
+	errorKey := NewStringKey("error")
 	x, err = c.Get(errorKey)
 	assert.Error(t, err)
 	assert.Nil(t, x)
@@ -87,7 +86,7 @@ func TestNewCache(t *testing.T) {
 
 	// disabled=true
 	// c = NewCache("test", true, retrieveOK, expiration, cleanupInterval)
-	c = NewBaseCache(true, retrieveOK, be)
+	c = NewBaseCache(true, retrieveTest, be)
 	assert.NotNil(t, c)
 	x, err = c.Get(aKey)
 	assert.NoError(t, err)

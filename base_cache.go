@@ -1,4 +1,4 @@
-package types
+package cache
 
 import (
 	"fmt"
@@ -6,22 +6,9 @@ import (
 	"time"
 
 	"github.com/wklken/cache/backend"
-	"github.com/wklken/cache/key"
 )
 
 const EmptyCacheExpiration = 5 * time.Second
-
-type RetrieveFunc func(k key.Key) (interface{}, error)
-
-type Cache interface {
-	Get(k key.Key) (interface{}, error)
-
-	GetString(k key.Key) (string, error)
-	GetBool(k key.Key) (bool, error)
-	GetTime(k key.Key) (time.Time, error)
-
-	Disabled() bool
-}
 
 type BaseCache struct {
 	backend backend.Backend
@@ -36,20 +23,20 @@ type EmptyCache struct {
 	err error
 }
 
-func (c *BaseCache) Get(k key.Key) (interface{}, error) {
+func (c *BaseCache) Get(key Key) (interface{}, error) {
 	// 1. if cache is disabled, fetch and return
 	if c.disabled {
-		value, err := c.retrieveFunc(k)
+		value, err := c.retrieveFunc(key)
 		if err != nil {
 			return nil, err
 		}
 		return value, nil
 	}
 
-	key := k.Key()
+	k := key.Key()
 
 	// 2. get from cache
-	value, ok := c.backend.Get(key)
+	value, ok := c.backend.Get(k)
 	if ok {
 		// if retrieve fail from retrieveFunc
 		if emptyCache, isEmptyCache := value.(EmptyCache); isEmptyCache {
@@ -59,10 +46,10 @@ func (c *BaseCache) Get(k key.Key) (interface{}, error) {
 	}
 
 	// 3. if not exists in cache, retrieve it
-	return c.doRetrieve(k)
+	return c.doRetrieve(key)
 }
 
-func (c *BaseCache) doRetrieve(k key.Key) (interface{}, error) {
+func (c *BaseCache) doRetrieve(k Key) (interface{}, error) {
 	// 3 lock and unlock
 	c.retrieveMu.Lock()
 	defer c.retrieveMu.Unlock()
@@ -95,7 +82,7 @@ func (c *BaseCache) doRetrieve(k key.Key) (interface{}, error) {
 // TODO: 这里需要实现所有类型的 GetXXXX
 
 // ! if retrieve fail, will return ("", err) for expire time
-func (c *BaseCache) GetString(k key.Key) (string, error) {
+func (c *BaseCache) GetString(k Key) (string, error) {
 	value, err := c.Get(k)
 	if err != nil {
 		return "", err
@@ -108,7 +95,7 @@ func (c *BaseCache) GetString(k key.Key) (string, error) {
 	return v, nil
 }
 
-func (c *BaseCache) GetBool(k key.Key) (bool, error) {
+func (c *BaseCache) GetBool(k Key) (bool, error) {
 	value, err := c.Get(k)
 	if err != nil {
 		return false, err
@@ -123,7 +110,7 @@ func (c *BaseCache) GetBool(k key.Key) (bool, error) {
 
 var defaultZeroTime = time.Time{}
 
-func (c *BaseCache) GetTime(k key.Key) (time.Time, error) {
+func (c *BaseCache) GetTime(k Key) (time.Time, error) {
 	value, err := c.Get(k)
 	if err != nil {
 		return defaultZeroTime, err
