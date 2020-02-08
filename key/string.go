@@ -4,8 +4,8 @@ type StringKey struct {
 	key string
 }
 
-func NewStringKey(key string) *StringKey {
-	return &StringKey{
+func NewStringKey(key string) StringKey {
+	return StringKey{
 		key: key,
 	}
 }

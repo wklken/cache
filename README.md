@@ -13,58 +13,102 @@ go cache with fetch hook
 #### use string key
 
 ```go
+package main
 
+import (
+	"fmt"
+	"time"
+
+	"github.com/wklken/cache"
+	"github.com/wklken/cache/key"
+)
+
+// 1. impl the reterive func
+func RetrieveOK(k key.Key) (interface{}, error) {
+	arg := k.(*key.StringKey)
+	fmt.Println("arg: ", arg)
+	// you can use the arg to fetch data from database or http request
+	// username, err := GetFromDatabase(arg)
+	// if err != nil {
+	//     return nil, err
+	// }
+	return "ok", nil
+}
+
+func main() {
+	// 2. new a cache
+	c := cache.NewCache(
+		"example",
+		false,
+		RetrieveOK,
+		5*time.Minute,
+		6*time.Minute)
+
+	// 4. use it
+	k := key.NewStringKey("hello")
+
+	data, err := c.Get(k)
+	fmt.Println("err == nil: ", err == nil)
+	fmt.Println("data from cache: ", data)
+}
 ```
 
-
-
-build your own Key
+#### use your own key
 
 
 ```go
-# 1. impl the keyer
-func NewExampleKey(field1 string, field2 int64) ExampleKey {
-	return ExampleKey{
-		Field1: field1,
-		Field2: field2,
-	}
+package main
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/wklken/cache"
+	"github.com/wklken/cache/key"
+)
+
+// 1. impl the key interface, Key() string
+type ExampleKey struct {
+	Field1 string
+	Field2 int64
 }
 
 func (k ExampleKey) Key() string {
 	return fmt.Sprintf("%s:%d", k.Field1, k.Field2)
 }
 
+// 2. impl the reterive func
+func RetrieveExample(inKey key.Key) (interface{}, error) {
+	k := inKey.(ExampleKey)
+	fmt.Println("ExampleKey Field1 and Field2 value:", k.Field1, k.Field2)
+	// data, err := GetFromDatabase(k.Field1, k.Field2)
+	// if err != nil {
+	//     return nil, err
+	// }
+	return "world", nil
+}
 
+func main() {
+	// 3. new a cache
+	c := cache.NewCache(
+		"example",
+		false,
+		RetrieveExample,
+		5*time.Minute,
+		6*time.Minute)
 
-# 2. impl the reterive func
-func RetrieveExample(key ExampleKey) (interface{}, error) {
-    f1 := key.Field1
-    f2 := key.Field2
-
-	username, err := GetFromDatabase(f1, f2)
-	if err != nil {
-		return nil, err
+	// 4. use it
+	k := ExampleKey{
+		Field1: "hello",
+		Field2: 42,
 	}
-	return username, nil
+
+	data, err := c.Get(k)
+	fmt.Println("err == nil: ", err == nil)
+	fmt.Println("data from cache: ", data)
+
+	dataStr, err := c.GetString(k)
+	fmt.Println("err == nil: ", err == nil)
+	fmt.Printf("data type is %T, value is %s\n", dataStr, dataStr)
 }
-
-
-
-# 3. new a cache
-var exampleCache cache.CacheFactory
-exampleCache = cache.NewCache(
-	"example",
-	false,
-    RetrieveExample,
-	5*time.Minute,
-	6*time.Minute)
-
-# 4. use it
-k := ExampleKey{
-    f1: "aaaa",
-    f2: 1,
-}
-exmaplCache.Get(k)
-exmaplCache.GetString(k)
-exmapleCache.Set(k, xxx)
 ```
