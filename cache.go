@@ -9,8 +9,8 @@ import (
 )
 
 func NewCache(name string, disabled bool, retrieveFunc RetrieveFunc,
-	expiration time.Duration, cleanupInterval time.Duration) Cache {
-	be := backend.NewMemoryBackend(name, expiration, cleanupInterval)
+	expiration time.Duration) Cache {
+	be := backend.NewMemoryBackend(name, expiration)
 	return NewBaseCache(disabled, retrieveFunc, be)
 }
 

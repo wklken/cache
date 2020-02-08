@@ -1,6 +1,6 @@
 # cache
 
-go cache with fetch hook
+go cache with multiple backends support, auto to fetch the data if missing.
 
 - retrieveFunc will be called if the key not in cache
 - TTL required
@@ -24,7 +24,7 @@ import (
 
 // 1. impl the reterive func
 func RetrieveOK(k cache.Key) (interface{}, error) {
-	arg := k.(*cache.StringKey)
+	arg := k.(cache.StringKey)
 	fmt.Println("arg: ", arg)
 	// you can use the arg to fetch data from database or http request
 	// username, err := GetFromDatabase(arg)
@@ -108,5 +108,31 @@ func main() {
 	dataStr, err := c.GetString(k)
 	fmt.Println("err == nil: ", err == nil)
 	fmt.Printf("data type is %T, value is %s\n", dataStr, dataStr)
+}
+```
+
+#### use redis backend
+
+```go
+func retrieveOK(k Key) (interface{}, error) {
+	return "ok", nil
+}
+
+func main() {
+    // 1. mock redis cli via miniredis
+	mr, err := miniredis.Run()
+	if err != nil {
+		panic(err)
+	}
+
+	cli := redis.NewClient(&redis.Options{
+		Addr: mr.Addr(),
+	})
+
+    // 2. create redis backend
+	be := NewRedisBackend("test", cli, 5*time.Second)
+
+    // 3. new the cache
+	c := NewRedisCache("test", false, retrieveOK, cli, 5 * time.Minute)
 }
 ```
