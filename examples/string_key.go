@@ -25,8 +25,7 @@ func main() {
 		"example",
 		false,
 		RetrieveOK,
-		5*time.Minute,
-		6*time.Minute)
+		5*time.Minute)
 
 	// 4. use it
 	k := cache.NewStringKey("hello")

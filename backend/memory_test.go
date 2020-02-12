@@ -10,6 +10,9 @@ import (
 func TestNewTTLCache(t *testing.T) {
 	c := newTTLCache(5*time.Second, 10*time.Second)
 	assert.NotNil(t, c)
+
+	c = newTTLCache(5 * time.Second, 0 * time.Second)
+	assert.NotNil(t, c)
 }
 
 func TestMemoryBackend(t *testing.T) {

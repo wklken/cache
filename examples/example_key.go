@@ -34,8 +34,7 @@ func main() {
 		"example",
 		false,
 		RetrieveExample,
-		5*time.Minute,
-		6*time.Minute)
+		5*time.Minute)
 
 	// 4. use it
 	k := ExampleKey{

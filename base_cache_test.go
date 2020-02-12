@@ -28,12 +28,19 @@ func retrieveTest(k Key) (interface{}, error) {
 	}
 }
 
+func retrieveError(k Key) (interface{}, error) {
+	return nil, errors.New("test error")
+}
+
 func TestNewBaseCache(t *testing.T) {
 	expiration := 5 * time.Minute
 
 	be := backend.NewMemoryBackend("test", expiration)
 
 	c := NewBaseCache(false, retrieveTest, be)
+
+	// Disabled
+	assert.False(t, c.Disabled())
 
 	// get from cache
 	aKey := NewStringKey("a")
@@ -55,6 +62,7 @@ func TestNewBaseCache(t *testing.T) {
 	x, err = c.GetBool(boolKey)
 	assert.NoError(t, err)
 	assert.Equal(t, true, x.(bool))
+
 	// get time
 	timeKey := NewStringKey("time")
 	x, err = c.GetTime(timeKey)
@@ -100,5 +108,24 @@ func TestNewBaseCache(t *testing.T) {
 	_, err = c.GetTime(aKey)
 	assert.Error(t, err)
 
+	// retrieveError
+	c = NewBaseCache(true, retrieveError, be)
+	assert.NotNil(t, c)
+	x, err = c.Get(aKey)
+	assert.Error(t, err)
+
+	_, err = c.GetString(timeKey)
+	assert.Error(t, err)
+	assert.Equal(t, "test error", err.Error())
+
+	_, err = c.GetBool(aKey)
+	assert.Error(t, err)
+	assert.Equal(t, "test error", err.Error())
+
+	_, err = c.GetTime(aKey)
+	assert.Error(t, err)
+	assert.Equal(t, "test error", err.Error())
+
 	// TODO: add emptyCache here
+
 }
