@@ -1,14 +1,31 @@
 language: go
 
-env: GO111MODULE=on
+matrix:
+  fast_finish: true
+  include:
+  - go: 1.11.x
+    env: GO111MODULE=on
+  - go: 1.12.x
+    env: GO111MODULE=on
+  - go: 1.13.x
+  - go: 1.14.x
+  - go: master
 
-go:
-  - 1.14.x
-  - 1.13.x
+git:
+  depth: 10
+
+before_install:
+  - if [[ "${GO111MODULE}" = "on" ]]; then mkdir "${HOME}/go"; export GOPATH="${HOME}/go"; fi
+
+install:
+  - if [[ "${GO111MODULE}" = "on" ]]; then go mod download; fi
+  - if [[ "${GO111MODULE}" = "on" ]]; then export PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"; fi
+  - if [[ "${GO111MODULE}" = "on" ]]; then make tools; fi
+
+go_import_path: github.com/wklken/cache
 
 before_script:
   - go install github.com/golangci/golangci-lint/cmd/golangci-lint
-  - make dep
 
 script:
   - make lint
