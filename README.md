@@ -1,5 +1,7 @@
 # cache
 
+[![Build Status](https://travis-ci.com/wklken/cache.svg)](https://travis-ci.com/wklken/cache) [![GoDoc](https://godoc.org/github.com/wklken/cache?status.svg)](https://godoc.org/github.com/wklken/cache) [![Go Report Card](https://goreportcard.com/badge/github.com/wklken/cache)](https://goreportcard.com/report/github.com/wklken/cache)
+
 go cache with multiple backends support, auto to fetch the data if missing.
 
 - retrieveFunc will be called if the key not in cache
