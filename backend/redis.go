@@ -49,6 +49,13 @@ func (c *RedisBackend) Get(key string) (interface{}, bool) {
 	return value, true
 }
 
+func (c *RedisBackend) Delete(key string) error {
+	rKey := fmt.Sprintf("%s:%s", c.name, key)
+
+	return c.codec.Delete(rKey)
+
+}
+
 func NewRedisBackend(name string, cli *redis.Client, expiration time.Duration) *RedisBackend {
 	return &RedisBackend{
 		name: name,

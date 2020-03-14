@@ -52,6 +52,11 @@ func TestNewBaseCache(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "1", x.(string))
 
+	assert.True(t, c.Exists(aKey))
+
+	_, ok := c.DirectGet(aKey)
+	assert.True(t, ok)
+
 	// get string
 	x, err = c.GetString(aKey)
 	assert.NoError(t, err)
@@ -91,6 +96,21 @@ func TestNewBaseCache(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, "", x)
 
+	// delete
+	delKey := NewStringKey("a")
+	x, err = c.Get(delKey)
+	assert.NoError(t, err)
+	assert.Equal(t, "1", x.(string))
+
+	err = c.Delete(delKey)
+	assert.NoError(t, err)
+	assert.False(t, c.Exists(delKey))
+
+	_, ok = c.DirectGet(delKey)
+	assert.False(t, ok)
+	// x, err = c.Get(delKey)
+	// assert.Error(t, err)
+
 	// disabled=true
 	// c = NewCache("test", true, retrieveOK, expiration, cleanupInterval)
 	c = NewBaseCache(true, retrieveTest, be)
@@ -125,6 +145,8 @@ func TestNewBaseCache(t *testing.T) {
 	_, err = c.GetTime(aKey)
 	assert.Error(t, err)
 	assert.Equal(t, "test error", err.Error())
+
+	// TODO: mock the backend first Get fail, second Get ok
 
 	// TODO: add emptyCache here
 

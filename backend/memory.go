@@ -39,9 +39,14 @@ func (c *MemoryBackend) Get(key string) (interface{}, bool) {
 	return c.cache.Get(key)
 }
 
-func NewMemoryBackend(name string, expiration time.Duration) *MemoryBackend {
+func (c *MemoryBackend) Delete(key string) error {
+	c.cache.Delete(key)
+	return nil
+}
 
+func NewMemoryBackend(name string, expiration time.Duration) *MemoryBackend {
 	cleanupInterval := expiration + (5 * time.Minute)
+
 	return &MemoryBackend{
 		name:              name,
 		cache:             newTTLCache(expiration, cleanupInterval),

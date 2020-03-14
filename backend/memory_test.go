@@ -11,7 +11,7 @@ func TestNewTTLCache(t *testing.T) {
 	c := newTTLCache(5*time.Second, 10*time.Second)
 	assert.NotNil(t, c)
 
-	c = newTTLCache(5 * time.Second, 0 * time.Second)
+	c = newTTLCache(5*time.Second, 0*time.Second)
 	assert.NotNil(t, c)
 }
 
@@ -26,4 +26,9 @@ func TestMemoryBackend(t *testing.T) {
 	value, found := be.Get("hello")
 	assert.True(t, found)
 	assert.Equal(t, "world", value)
+
+	be.Delete("hello")
+	_, found = be.Get("hello")
+	assert.False(t, found)
+
 }

@@ -23,6 +23,13 @@ type EmptyCache struct {
 	err error
 }
 
+func (c *BaseCache) Exists(key Key) bool {
+	k := key.Key()
+	_, ok := c.backend.Get(k)
+	return ok
+}
+
+// Get will get the key from cache, if missing, will call the retrieveFunc to get the data, add to cache, then return
 func (c *BaseCache) Get(key Key) (interface{}, error) {
 	// 1. if cache is disabled, fetch and return
 	if c.disabled {
@@ -121,6 +128,17 @@ func (c *BaseCache) GetTime(k Key) (time.Time, error) {
 		return defaultZeroTime, fmt.Errorf("not a string value. key=%s, value=%v(%T)", k.Key(), value, value)
 	}
 	return v, nil
+}
+
+func (c *BaseCache) Delete(key Key) error {
+	k := key.Key()
+	return c.backend.Delete(k)
+}
+
+// DirectGet will get key from cache, without calling the retrieveFunc
+func (c *BaseCache) DirectGet(key Key) (interface{}, bool) {
+	k := key.Key()
+	return c.backend.Get(k)
 }
 
 func (c *BaseCache) Disabled() bool {

@@ -17,5 +17,10 @@ type Cache interface {
 	GetBool(key Key) (bool, error)
 	GetTime(key Key) (time.Time, error)
 
+	Delete(key Key) error
+	Exists(key Key) bool
+
+	DirectGet(key Key) (interface{}, bool)
+
 	Disabled() bool
 }

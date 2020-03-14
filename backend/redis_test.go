@@ -30,6 +30,11 @@ func TestRedisBackend(t *testing.T) {
 	assert.True(t, found)
 	assert.Equal(t, "world", value)
 
+	// delete
+	be.Delete("hello")
+	_, found = be.Get("hello")
+	assert.False(t, found)
+
 	// close the cli, set will fail with log
 	cli.Close()
 	be.Set("hello", "world", time.Duration(0))
