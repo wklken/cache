@@ -24,9 +24,6 @@ install:
 
 go_import_path: github.com/wklken/cache
 
-before_script:
-  - go install github.com/golangci/golangci-lint/cmd/golangci-lint
-
 script:
   - make lint
   - make test
