@@ -8,6 +8,18 @@ go cache with multiple backends support, auto to fetch the data if missing.
 - support backend: redis(via [patrickmn/go-cache](https://github.com/patrickmn/go-cache))
 
 
+## Installation
+
+```
+$ go get github.com/wklken/cache
+```
+
+## Documentation
+
+- [Go Doc](https://godoc.org/github.com/wklken/cache)
+- [Go Walker](https://gowalker.org/github.com/wklken/cache)
+
+
 ## usage
 
 #### use string key
@@ -134,3 +146,7 @@ func main() {
 	c := NewRedisCache("test", false, retrieveOK, cli, 5 * time.Minute)
 }
 ```
+
+## License
+
+MIT
