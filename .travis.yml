@@ -24,8 +24,9 @@ install:
 go_import_path: github.com/wklken/cache
 
 before_script:
-  - make tools
+  - go install github.com/golangci/golangci-lint/cmd/golangci-lint
 
 script:
-  - make lint
-  - make test
+  - golangci-lint run --fast -e examples/*
+  - go test -mod=vendor -gcflags=all=-l $(go list ./... | grep -v examples) -covermode=count -coverprofile .coverage.cov
+  - go tool cover -func=.coverage.cov
