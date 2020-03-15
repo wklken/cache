@@ -7,11 +7,13 @@ go cache with multiple backends support, auto to fetch the data if missing.
 - retrieveFunc will be called if the key not in cache
 - cache the missing key for 5s, avoid cache breakdown
 - TTL required
+- support go version 1.11+
 - support backend: memory (via [go-redis/cache](https://github.com/go-redis/cache))
 - support backend: redis(via [patrickmn/go-cache](https://github.com/patrickmn/go-cache))
 
 
 ## Installation
+
 
 ```
 $ go get github.com/wklken/cache
