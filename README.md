@@ -134,7 +134,7 @@ func retrieveOK(k Key) (interface{}, error) {
 }
 
 func main() {
-    // 1. mock redis cli via miniredis
+	// 1. mock redis cli via miniredis
 	mr, err := miniredis.Run()
 	if err != nil {
 		panic(err)
@@ -144,10 +144,10 @@ func main() {
 		Addr: mr.Addr(),
 	})
 
-    // 2. create redis backend
+	// 2. create redis backend
 	be := NewRedisBackend("test", cli, 5*time.Second)
 
-    // 3. new the cache
+	// 3. new the cache
 	c := NewRedisCache("test", false, retrieveOK, cli, 5 * time.Minute)
 }
 ```
