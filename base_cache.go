@@ -115,6 +115,19 @@ func (c *BaseCache) GetBool(k Key) (bool, error) {
 	return v, nil
 }
 
+func (c *BaseCache) GetInt64(k Key) (int64, error) {
+	value, err := c.Get(k)
+	if err != nil {
+		return 0, err
+	}
+
+	v, ok := value.(int64)
+	if !ok {
+		return 0, fmt.Errorf("not a int64 value. key=%s, value=%v(%T)", k.Key(), value, value)
+	}
+	return v, nil
+}
+
 var defaultZeroTime = time.Time{}
 
 func (c *BaseCache) GetTime(k Key) (time.Time, error) {

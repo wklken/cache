@@ -21,6 +21,8 @@ func retrieveTest(k Key) (interface{}, error) {
 		return nil, errors.New("error")
 	case "bool":
 		return true, nil
+	case "int64":
+		return int64(1), nil
 	case "time":
 		return time.Time{}, nil
 	default:
@@ -66,7 +68,13 @@ func TestNewBaseCache(t *testing.T) {
 	boolKey := NewStringKey("bool")
 	x, err = c.GetBool(boolKey)
 	assert.NoError(t, err)
-	assert.Equal(t, true, x.(bool))
+	assert.Equal(t, true, x)
+
+	// get int64
+	int64Key := NewStringKey("int64")
+	x, err = c.GetInt64(int64Key)
+	assert.NoError(t, err)
+	assert.Equal(t, int64(1), x)
 
 	// get time
 	timeKey := NewStringKey("time")

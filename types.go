@@ -15,6 +15,7 @@ type Cache interface {
 
 	GetString(key Key) (string, error)
 	GetBool(key Key) (bool, error)
+	GetInt64(key Key) (int64, error)
 	GetTime(key Key) (time.Time, error)
 
 	Delete(key Key) error
