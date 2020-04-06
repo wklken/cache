@@ -7,9 +7,9 @@ go cache the data in memory, auto to fetch the data if missing.
 - based on via [patrickmn/go-cache](https://github.com/patrickmn/go-cache)
 - retrieveFunc will be called if the key not in cache
 - TTL required
-- cache the missing key for 5s, avoid cache penetration
-- use singleflight to avoid cache breakdown
-- cache in memory, no need to worry about cache avalanche
+- cache the missing key for 5s, avoid `cache penetration`
+- use [singleflight ](https://godoc.org/golang.org/x/sync/singleflight) to avoid `cache breakdown`
+- cache in memory, no need to worry about `cache avalanche`
 - support go version 1.11+
 
 ## Installation
