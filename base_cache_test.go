@@ -133,6 +133,9 @@ func TestNewBaseCache(t *testing.T) {
 	_, err = c.GetBool(aKey)
 	assert.Error(t, err)
 
+	_, err = c.GetInt64(aKey)
+	assert.Error(t, err)
+
 	_, err = c.GetTime(aKey)
 	assert.Error(t, err)
 
@@ -147,6 +150,10 @@ func TestNewBaseCache(t *testing.T) {
 	assert.Equal(t, "test error", err.Error())
 
 	_, err = c.GetBool(aKey)
+	assert.Error(t, err)
+	assert.Equal(t, "test error", err.Error())
+
+	_, err = c.GetInt64(aKey)
 	assert.Error(t, err)
 	assert.Equal(t, "test error", err.Error())
 
