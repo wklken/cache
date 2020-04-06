@@ -2,8 +2,9 @@ package cache
 
 import (
 	"fmt"
-	"sync"
 	"time"
+
+	"golang.org/x/sync/singleflight"
 
 	"github.com/wklken/cache/backend"
 )
@@ -15,7 +16,7 @@ type BaseCache struct {
 
 	disabled     bool
 	retrieveFunc RetrieveFunc
-	retrieveMu   sync.RWMutex
+	g            singleflight.Group
 }
 
 // TODO: 内存上可以优化, error相同的话使用同一个对象
@@ -57,23 +58,13 @@ func (c *BaseCache) Get(key Key) (interface{}, error) {
 }
 
 func (c *BaseCache) doRetrieve(k Key) (interface{}, error) {
-	// 3 lock and unlock
-	c.retrieveMu.Lock()
-	defer c.retrieveMu.Unlock()
-
 	key := k.Key()
 
-	// 3.1 check again
-	value, ok := c.backend.Get(key)
-	if ok {
-		// if retrieve fail from retrieveFunc
-		if emptyCache, isEmptyCache := value.(EmptyCache); isEmptyCache {
-			return nil, emptyCache.err
-		}
-		return value, nil
-	}
 	// 3.2 fetch
-	value, err := c.retrieveFunc(k)
+	value, err, _ := c.g.Do(key, func() (interface{}, error) {
+		return c.retrieveFunc(k)
+	})
+
 	if err != nil {
 		// ! if error, cache it too, make it short enough(5s)
 		c.backend.Set(key, EmptyCache{err: err}, EmptyCacheExpiration)
